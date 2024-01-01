@@ -1,0 +1,74 @@
+import pandas as pd
+from pandas import Index
+
+df=pd.read_csv(r'https://github.com/YBI-Foundation/Dataset/raw/main/Diabetes.csv')
+
+df.head()
+
+df.info()
+
+df.describe()
+
+df.columns
+Index(['pregnancies', 'glucose', 'diastolic', 'triceps', 'insulin', 'bmi',
+        'dpf', 'age', 'diabetes'],
+       dtype='object')
+df.shape
+(768, 9)
+df['diabetes'].value_counts()
+df.groupby('diabetes').mean()
+y=df['diabetes']
+y.shape
+x= df[['pregnancies', 'glucose', 'diastolic', 'triceps', 'insulin', 'bmi',
+        'dpf', 'age']]
+x.shape
+x
+
+!pip install sklearn
+
+from sklearn.preprocessing import MinMaxScaler
+mm = MinMaxScaler()
+x = mm.fit_transform(x)
+x
+
+from sklearn.model_selection import train_test_split
+x_train, x_test,y_train,y_test = train_test_split(x,y,test_size=0.3,stratify= y,random_state=2529)
+x_train.shape, x_test.shape, y_train.shape,y_test.shape
+
+from sklearn.linear_model import LogisticRegression
+lr = LogisticRegression()
+lr.fit(x_train,y_train)
+LogisticRegression()
+
+y_pred = lr.predict(x_test)
+
+y_pred.shape
+
+y_pred
+
+lr.predict_proba(x_test)
+
+from sklearn.metrics import confusion_matrix, classification_report
+print(confusion_matrix(y_test, y_pred))
+print(classification_report(y_test,y_pred))
+
+x_new = df.sample(1)
+
+x_new
+
+x_new.shape
+(1, 9)
+
+x_new = x_new.drop('diabetes', axis=1)
+
+x_new
+
+x_new.shape
+
+x_new = mm.fit_transform(x_new)
+
+y_pred_new= lr.predict(x_new)
+y_pred_new
+
+
+lr.predict_proba(x_new)
